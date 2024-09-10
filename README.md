@@ -70,6 +70,16 @@ hostnamectl set-hostname <FQDN>; exec bash
     <td align="center">192.168.99.0/29</td>
     <td align="center">192.168.99.1 - 192.168.99.6</td>
   </tr>
+  <tr>
+    <td align="center">ISP - HQ-RTR</td>
+    <td align="center">172.16.4.0/28</td>
+    <td align="center">172.16.4.1 - 172.16.4.14</td>
+  </tr>
+  <tr>
+    <td align="center">ISP - BR-RTR</td>
+    <td align="center">172.16.5.0/28</td>
+    <td align="center">172.16.5.1 - 172.16.5.14</td>
+  </tr>
 </table>
 
 <br/>
