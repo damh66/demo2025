@@ -1,5 +1,7 @@
 # Demo2025 - Модуль 1
 
+[Задание](https://bom.firpo.ru/file/66614/%D0%9A%D0%9E%D0%94%2009.02.06-1-2025%20%D0%A2%D0%BE%D0%BC%201.pdf)
+
 ### Топология:
 
 <p align="center">
@@ -96,21 +98,21 @@ hostnamectl set-hostname <FQDN>; exec bash
   </tr>
   <tr>
     <td align="center" rowspan="3">ISP</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">ens33</td>
+    <td align="center">10.12.28.5 (DHCP)</td>
+    <td align="center">/24</td>
+    <td align="center">10.12.28.254</td>
   </tr>
   <tr>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
+    <td align="center">ens34</td>
+    <td align="center">172.16.5.1</td>
+    <td align="center">/28</td>
     <td align="center"></td>
   </tr>
   <tr>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
+    <td align="center">ens35</td>
+    <td align="center">172.16.4.1</td>
+    <td align="center">/28</td>
     <td align="center"></td>
   </tr>
   <tr>
@@ -141,24 +143,24 @@ hostnamectl set-hostname <FQDN>; exec bash
   </tr>
   <tr>
     <td align="center">HQ-SRV</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">ens33</td>
+    <td align="center">192.168.100.62</td>
+    <td align="center">/26</td>
+    <td align="center">192.168.100.1</td>
   </tr>
   <tr>
     <td align="center">BR-SRV</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">ens33</td>
+    <td align="center">192.168.0.30</td>
+    <td align="center">/27</td>
+    <td align="center">192.168.0.1</td>
   </tr>
   <tr>
     <td align="center">HQ-CLI</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">ens33</td>
+    <td align="center">192.168.200.14</td>
+    <td align="center">/28</td>
+    <td align="center">192.168.200.1</td>
   </tr>
 </table>
 
