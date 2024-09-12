@@ -34,13 +34,22 @@
 <summary>Решение</summary>
 <br>
   
-**Настройка имен устройств:**
+**Настройка имен устройств на ALT Linux:**
 ```
 hostnamectl set-hostname <FQDN>; exec bash
 ```
 > FQDN (Fully Qualified Domain Name) - полное доменное имя
 > 
 > `exec bash` - обновление оболочки
+
+**Настройка имен устройств на EcoRouter:**
+
+Переходим в режим конфигурации и прописываем следующее:
+
+```
+hostname <name>
+```
+> `<name>` - желаемое имя устройства
 
 <br/>
 
@@ -53,17 +62,17 @@ hostnamectl set-hostname <FQDN>; exec bash
     <td align="center">Пул-адресов</td>
   </tr>
   <tr>
-    <td align="center">HQ-SRV (VLAN 100)</td>
+    <td align="center">SRV-Net (VLAN 100)</td>
     <td align="center">192.168.100.0/26</td>
     <td align="center">192.168.100.1 - 192.168.100.62</td>
   </tr>
   <tr>
-    <td align="center">HQ-CLI (VLAN 200)</td>
+    <td align="center">CLI-Net (VLAN 200)</td>
     <td align="center">192.168.200.0/28</td>
     <td align="center">192.168.200.1 - 192.168.200.14</td>
   </tr>
   <tr>
-    <td align="center">BR-SRV</td>
+    <td align="center">BR-Net</td>
     <td align="center">192.168.0.0/27</td>
     <td align="center">192.168.0.1 - 192.168.0.30</td>
   </tr>
@@ -73,12 +82,12 @@ hostnamectl set-hostname <FQDN>; exec bash
     <td align="center">192.168.99.1 - 192.168.99.6</td>
   </tr>
   <tr>
-    <td align="center">ISP - HQ-RTR</td>
+    <td align="center">ISP-HQ</td>
     <td align="center">172.16.4.0/28</td>
     <td align="center">172.16.4.1 - 172.16.4.14</td>
   </tr>
   <tr>
-    <td align="center">ISP - BR-RTR</td>
+    <td align="center">ISP-BR</td>
     <td align="center">172.16.5.0/28</td>
     <td align="center">172.16.5.1 - 172.16.5.14</td>
   </tr>
@@ -117,28 +126,28 @@ hostnamectl set-hostname <FQDN>; exec bash
   </tr>
   <tr>
     <td align="center" rowspan="2">HQ-RTR</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">isp-hq</td>
+    <td align="center">172.16.4.2</td>
+    <td align="center">/28</td>
+    <td align="center">172.16.4.1</td>
   </tr>
   <tr>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
+    <td align="center">vl100</td>
+    <td align="center">192.168.100.1</td>
+    <td align="center">/26</td>
     <td align="center"></td>
   </tr>
   <tr>
     <td align="center" rowspan="2">BR-RTR</td>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
-    <td align="center">gateway</td>
+    <td align="center">isp-br</td>
+    <td align="center">172.16.5.2</td>
+    <td align="center">/28</td>
+    <td align="center">172.16.5.1</td>
   </tr>
   <tr>
-    <td align="center">interface</td>
-    <td align="center">ip address</td>
-    <td align="center">netmask</td>
+    <td align="center">br-net</td>
+    <td align="center">192.168.0.1</td>
+    <td align="center">/27</td>
     <td align="center"></td>
   </tr>
   <tr>
