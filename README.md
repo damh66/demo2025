@@ -4,13 +4,15 @@
 
 [Задание (сокращенное)](https://github.com/damh66/demo2025/blob/main/%D0%9A%D0%9E%D0%94%2009.02.06-1-2025%20%D0%A2%D0%BE%D0%BC%201%20(%D1%81%D0%BE%D0%BA%D1%80).pdf)
 
-### Топология:
+## Топология:
 
 <p align="center">
   <img width="450" height="600" src="https://github.com/user-attachments/assets/8ee209f5-6fed-4f03-bbe3-e202155957b3"
 <p\>
 
-### Задание 1
+<br/>
+
+## Задание 1
 
 **Произведите базовую настройку устройств**
 
@@ -37,6 +39,7 @@
 <br>
   
 **Настройка имен устройств на ALT Linux:**
+
 ```
 hostnamectl set-hostname <FQDN>; exec bash
 ```
@@ -176,5 +179,183 @@ hostname <name>
 </table>
 
 > Адресация для **ISP** взята из следующего задания
+
+<br/>
+
+**Наcтройка IP-адресации на **HQ-SRV**, **BR-SRV**, **HQ-CLI** (настройка IP-адресации на **ISP** производится в следующем задании)** 
+
+Приводим файлы **`options`**, **`ipv4address`**, **`ipv4route`** в директории **`/etc/net/ifaces/*имя интерфейса*/`** к следующему виду (в примере **HQ-SRV**):
+
+```
+DISABLED=no
+TYPE=eth
+BOOTPROTO=static
+CONFIG_IPV4=yes
+```
+> **`options`**
+
+```
+192.168.100.62/26
+```
+> **`ipv4address`**
+
+```
+default via 192.168.100.1
+```
+> **`ipv4route`**
+
+<br/>
+
+**Настройка IP-адресации на EcoRouter**
+
+Настройка интерфейса на **HQ-RTR**, который смотрит в сторону **ISP**:
+
+- Создание логического интерфейса:
+
+```
+interface int0
+  description "to isp"
+  ip address 172.16.4.2/28
+```
+
+- Настройка физического порта:
+
+```
+port ge0
+  service-instance ge0/int0
+    encapsulation untagged
+```
+
+- Объединение порта с интерфейсом:
+
+```
+interface int0
+  connect port ge0 service-instance ge0/int0
+```
+
+Настройка интерфейса на **HQ-RTR**, который смотрит в сторону **HQ-SRV** и **HQ-CLI** (с разделением на VLAN):
+
+- Создание двух интерфейсов:
+
+```
+interface int1
+  description "to hq-srv"
+  ip address 192.168.100.1/26
+!
+interface int2
+  description "to hq-cli"
+  ip address 192.168.200.1/28
+```
+
+- Настройка порта:
+
+```
+port ge1
+  service-instance ge1/int1
+    encapsulation dot1q 100
+    rewrite pop 1
+  service-instance ge1/int2
+    encapsulation dot1q 200
+    rewrite pop 1
+```
+
+- Объединение портов с интерфейсами:
+
+```
+interface int1
+  connect port ge1 service-instance ge1/int1
+!
+interface int2
+  connect port ge1 service-instance ge1/int2
+```
+
+<br/>
+
+**Аналогично настройке HQ-RTR настраиваем BR-RTR (без разделения на VLAN)**
+
+<br/>
+
+**Добавление маршрута по умолчанию в EcoRouter**
+
+Прописываем следующее:
+
+```
+ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
+```
+
+</details>
+
+<br/>
+
+## Задание 2
+
+**Настройка ISP**
+
+- Настройте адресацию на интерфейсах:
+
+  - Интерфейс, подключенный к магистральному провайдеру, получает адрес по DHCP
+
+  - Настройте маршруты по умолчанию там, где это необходимо
+
+  - Интерфейс, к которому подключен HQ-RTR, подключен к сети 172.16.4.0/28
+
+  - Интерфейс, к которому подключен BR-RTR, подключен к сети 172.16.5.0/28
+
+  - На ISP настройте динамическую сетевую трансляцию в сторону HQ-RTR и BR-RTR для доступа к сети Интернет
+
+<br/>
+
+<details>
+<summary>Решение</summary>
+<br>
+
+**Настройка интерфейса, который получает IP-адрес по DHCP**
+
+Файл **`options`** (в директории интерфейса) приводим к следующему виду:
+
+```
+BOOTPROTO=dhcp
+TYPE=eth
+DISABLED=no
+CONFIG_IPV4=yes
+```
+> **`BOOTPROTO=dhcp`** - заменили статический способ настройки адреса на динамическое получение
+
+<br/>
+
+**Настройка маршрута по умолчанию**
+
+Прописываем шлюз по умолчанию:
+
+```
+default via *адрес шлюза*
+```
+
+<br/>
+
+**Настройка интерфейсов, смотрящих в сторону HQ-RTR и BR-RTR происходит аналогично настройке в Задании 1**
+
+<br/>
+
+**Настройка NAT**
+
+Добавляем правило в **`iptables`**:
+
+```
+iptables -A POSTROUTING -t nat -j MASQUERADE
+```
+
+<br/>
+
+**Включение маршрутизации**
+
+В файле **`/etc/net/sysctl.conf`** изменяем строку:
+
+```
+net.ipv4.ip_forward = 1
+```
+
+
+
 
 </details>
