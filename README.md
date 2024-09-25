@@ -130,27 +130,33 @@ hostname <name>
     <td align="center"></td>
   </tr>
   <tr>
-    <td align="center" rowspan="2">HQ-RTR</td>
-    <td align="center">isp-hq</td>
+    <td align="center" rowspan="3">HQ-RTR</td>
+    <td align="center">int0</td>
     <td align="center">172.16.4.2</td>
     <td align="center">/28</td>
     <td align="center">172.16.4.1</td>
   </tr>
   <tr>
-    <td align="center">vl100</td>
+    <td align="center">int1</td>
     <td align="center">192.168.100.1</td>
     <td align="center">/26</td>
     <td align="center"></td>
   </tr>
   <tr>
+    <td align="center">int2</td>
+    <td align="center">192.168.200.1</td>
+    <td align="center">/28</td>
+    <td align="center"></td>
+  </tr>
+  <tr>
     <td align="center" rowspan="2">BR-RTR</td>
-    <td align="center">isp-br</td>
+    <td align="center">int0</td>
     <td align="center">172.16.5.2</td>
     <td align="center">/28</td>
     <td align="center">172.16.5.1</td>
   </tr>
   <tr>
-    <td align="center">br-net</td>
+    <td align="center">int1</td>
     <td align="center">192.168.0.1</td>
     <td align="center">/27</td>
     <td align="center"></td>
