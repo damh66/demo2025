@@ -39,7 +39,6 @@
 <br>
   
 **Настройка имен устройств на ALT Linux:**
-
 ```
 hostnamectl set-hostname <FQDN>; exec bash
 ```
@@ -50,7 +49,6 @@ hostnamectl set-hostname <FQDN>; exec bash
 **Настройка имен устройств на EcoRouter:**
 
 Переходим в режим конфигурации и прописываем следующее:
-
 ```
 hostname <name>
 ```
@@ -191,7 +189,6 @@ hostname <name>
 **Наcтройка IP-адресации на **HQ-SRV**, **BR-SRV**, **HQ-CLI** (настройка IP-адресации на **ISP** производится в следующем задании)** 
 
 Приводим файлы **`options`**, **`ipv4address`**, **`ipv4route`** в директории **`/etc/net/ifaces/*имя интерфейса*/`** к следующему виду (в примере **HQ-SRV**):
-
 ```
 DISABLED=no
 TYPE=eth
@@ -217,7 +214,6 @@ default via 192.168.100.1
 Настройка интерфейса на **HQ-RTR**, который смотрит в сторону **ISP**:
 
 - Создание логического интерфейса:
-
 ```
 interface int0
   description "to isp"
@@ -225,7 +221,6 @@ interface int0
 ```
 
 - Настройка физического порта:
-
 ```
 port ge0
   service-instance ge0/int0
@@ -233,7 +228,6 @@ port ge0
 ```
 
 - Объединение порта с интерфейсом:
-
 ```
 interface int0
   connect port ge0 service-instance ge0/int0
@@ -242,7 +236,6 @@ interface int0
 Настройка интерфейса на **HQ-RTR**, который смотрит в сторону **HQ-SRV** и **HQ-CLI** (с разделением на VLAN):
 
 - Создание двух интерфейсов:
-
 ```
 interface int1
   description "to hq-srv"
@@ -254,7 +247,6 @@ interface int2
 ```
 
 - Настройка порта:
-
 ```
 port ge1
   service-instance ge1/int1
@@ -266,7 +258,6 @@ port ge1
 ```
 
 - Объединение портов с интерфейсами:
-
 ```
 interface int1
   connect port ge1 service-instance ge1/int1
@@ -284,7 +275,6 @@ interface int2
 **Добавление маршрута по умолчанию в EcoRouter**
 
 Прописываем следующее:
-
 ```
 ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
 ```
@@ -318,7 +308,6 @@ ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
 **Настройка интерфейса, который получает IP-адрес по DHCP**
 
 Файл **`options`** (в директории интерфейса) приводим к следующему виду:
-
 ```
 BOOTPROTO=dhcp
 TYPE=eth
@@ -332,7 +321,6 @@ CONFIG_IPV4=yes
 **Настройка маршрута по умолчанию**
 
 Прописываем шлюз по умолчанию:
-
 ```
 default via *адрес шлюза*
 ```
@@ -346,7 +334,6 @@ default via *адрес шлюза*
 **Настройка NAT**
 
 Добавляем правило в **`iptables`**:
-
 ```
 iptables -A POSTROUTING -t nat -j MASQUERADE
 ```
@@ -356,12 +343,138 @@ iptables -A POSTROUTING -t nat -j MASQUERADE
 **Включение маршрутизации**
 
 В файле **`/etc/net/sysctl.conf`** изменяем строку:
-
 ```
 net.ipv4.ip_forward = 1
 ```
 
+</details>
+
+<br/>
+
+## Задание 3
+
+**Создание локальных учетных записей**
+
+- Создайте пользователя sshuser на серверах HQ-SRV и BR-SRV
+
+  - Пароль пользователя sshuser с паролем P@ssw0rd
+
+  - Идентификатор пользователя 1010
+
+  - Пользователь sshuser должен иметь возможность запускать sudo без дополнительной аутентификации.
+
+- Создайте пользователя net_admin на маршрутизаторах HQ-RTR и BR-RTR
+
+  - Пароль пользователя net_admin с паролем P@$$word
+
+  - При настройке на EcoRouter пользователь net_admin должен обладать максимальными привилегиями
+
+  - При настройке ОС на базе Linux, запускать sudo без дополнительной аутентификации
+
+<br/>
+
+<details>
+<summary>Решение</summary>
+<br>
+
+**Создание пользователя sshuser на серверах**
+
+Создание самого пользователя:
+```
+useradd sshuser -u 1010
+```
+> опция **`-u`** позволяет указать идентификатор пользователя сразу при создании
+
+Задание пароля:
+```
+passwd sshuser
+```
+
+Добавление в группу **wheel**:
+```
+usermod -aG wheel sshuser
+```
+> 
+
+Добавляем строку в **`/etc/sudoers`**:
+```
+sshuser ALL=(ALL) NOPASSWD:ALL
+```
+> Позволяет запускать **sudo** без аутентификации 
+
+<br>
+
+**Создание пользователя **net_admin** на Ecorouter**
+
+Создание самого пользователя:
+```
+username net_admin
+```
+
+Задание пароля:
+```
+password P@ssw0rd
+```
+
+Присваиваем привилегии администратора:
+```
+role admin
+```
 
 
+</details>
+
+<br>
+
+## Задание 4
+
+**Настройте на интерфейсе HQ-RTR в сторону офиса HQ виртуальный коммутатор**
+
+- Сервер HQ-SRV должен находиться в ID VLAN 100
+- Клиент HQ-CLI в ID VLAN 200
+- Создайте подсеть управления с ID VLAN 999
+- Основные сведения о настройке коммутатора и выбора реализации разделения на VLAN занесите в отчёт
+
+<br/>
+
+<details>
+<summary>Решение</summary>
+<br>
+
+
+
+</details>
+
+<br>
+
+## Задание 5
+
+**Настройка безопасного удаленного доступа на серверах HQ-SRV и BRSRV**
+
+- Для подключения используйте порт 2024
+- Разрешите подключения только пользователю sshuser
+- Ограничьте количество попыток входа до двух
+- Настройте баннер «Authorized access only»
+
+<br/>
+
+<details>
+<summary>Решение</summary>
+<br>
+
+Приводим указанные строки в файле **`/etc/openssh/sshd_config`** к следующим значениям:
+```
+Port 2024
+MaxAuthTries 2
+PasswordAuthentication yes
+Banner "Authorized access only"
+AllowUsers  sshuser
+```
+> В параметре **AllowUsers** вместо пробела используется **`Tab`**
+
+Перезагружаем службу:
+```
+systemctl restart sshd
+```
 
 </details>
