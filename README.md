@@ -36,7 +36,7 @@
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
   
 **Настройка имен устройств на ALT Linux:**
 ```
@@ -303,7 +303,7 @@ ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 **Настройка интерфейса, который получает IP-адрес по DHCP**
 
@@ -371,7 +371,7 @@ sysctl -p /etc/sysctl.conf
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 **Создание пользователя sshuser на серверах**
 
@@ -390,7 +390,6 @@ passwd sshuser
 ```
 usermod -aG wheel sshuser
 ```
-> 
 
 Добавляем строку в **`/etc/sudoers`**:
 ```
@@ -398,7 +397,7 @@ sshuser ALL=(ALL) NOPASSWD:ALL
 ```
 > Позволяет запускать **sudo** без аутентификации 
 
-<br>
+<br/>
 
 **Создание пользователя **net_admin** на Ecorouter**
 
@@ -420,7 +419,7 @@ role admin
 
 </details>
 
-<br>
+<br/>
 
 ## Задание 4
 
@@ -435,13 +434,13 @@ role admin
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 
 
 </details>
 
-<br>
+<br/>
 
 ## Задание 5
 
@@ -456,7 +455,7 @@ role admin
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 Приводим указанные строки в файле **`/etc/openssh/sshd_config`** к следующим значениям:
 ```
@@ -482,7 +481,7 @@ systemctl restart sshd
 
 </details>
 
-<br>
+<br/>
 
 ## Задание 6
 
@@ -496,7 +495,7 @@ systemctl restart sshd
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 Создание **GRE**-туннеля на **HQ-RTR**:
 ```
@@ -519,11 +518,13 @@ ip mtu 1400
 ip tunnel 172.16.4.2 172.16.5.2 mode gre
 ```
 
+<br/>
+
 **GRE-туннель на BR-RTR настраивается аналогично примеру выше**
 
 </details>
 
-<br>
+<br/>
 
 ## Задание 7
 
@@ -541,7 +542,7 @@ ip tunnel 172.16.4.2 172.16.5.2 mode gre
 
 <details>
 <summary>Решение</summary>
-<br>
+<br/>
 
 Создание процесса **OSPF**, объявление сетей на **HQ-RTR** и указание **пассивных** интерфейсов:
 ```
@@ -553,10 +554,12 @@ router ospf 1
   no passive-interface tunnel.0
 ```
 
+<br/>
+
 **Маршрутизация OSPF на BR-RTR настраивается аналогично примеру выше**
 
 </details>
 
-<br>
+<br/>
 
 
