@@ -342,6 +342,8 @@ default via *адрес шлюза*
 net.ipv4.ip_forward = 1
 ```
 
+<br/>
+
 Изменения в файле **`sysctl.conf`** применяем следующей командой:
 ```
 sysctl -p /etc/sysctl.conf
@@ -598,14 +600,13 @@ router ospf 1
 <br/>
 
 <details>
-<summary>Решение (не до конца)</summary>
+<summary>Решение</summary>
 <br/>
 
-Добавляем правила **`iptables`** на **ISP**:
+**Настройка NAT на ISP**
+
+Добавляем правила **`iptables`** на ISP
 ```
-iptables -t nat -A POSTROUTING -o ens224 -s 192.168.100.0/26 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o ens224 -s 192.168.200.0/28 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o ens224 -s 192.168.0.0/27 -j MASQUERADE
 iptables -t nat -A POSTROUTING -o ens224 -s 172.16.4.0/28 -j MASQUERADE
 iptables -t nat -A POSTROUTING -o ens224 -s 172.16.5.0/28 -j MASQUERADE
 ```
@@ -622,6 +623,53 @@ iptables-save > /etc/sysconfig/iptables
 Включаем и добавляем **`iptables`** в автозагрузку:
 ```
 systemctl enable --now iptables
+```
+
+<br/>
+
+**Настройка NAT на HQ-RTR**
+
+Указываем **внутренние** и **внешние** интерфейсы:
+```
+int int1
+  ip nat inside
+!
+int int2
+  ip nat inside
+!
+int int0
+  ip nat outside
+```
+
+<br/>
+
+Создаем пул:
+```
+ip nat pool NAT_POOL 192.168.100.1-192.168.100.62,192.168.200.1-192.168.200.14
+```
+
+<br/>
+
+Создаем **правило** трансляции адресов, указывая внешний интерфейс:
+```
+ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
+```
+
+<br/>
+
+**Настройка NAT на BR-RTR**
+
+Конфигурация:
+```
+int int1
+  ip nat inside
+!
+int int0
+  ip nat outside
+!
+ip nat pool NAT_POOL 192.168.0.1-192.168.0.30
+!
+ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 ```
 
 </details>
