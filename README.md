@@ -704,7 +704,7 @@ ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 
 Создаем **пул** для **DHCP-сервера**:
 ```
-ip pool cli_pool 192.168.200.2-192.168.200.14
+ip pool cli_pool 192.168.200.14-192.168.200.14
 ```
 
 <br/>
