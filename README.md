@@ -1008,7 +1008,7 @@ systemctl restart bind
 
 Проверяем работоспособность:
 ```
-nslookup **IP-адрес/dns-имя**
+nslookup **IP-адрес/DNS-имя**
 ```
 
 </details>
