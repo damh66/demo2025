@@ -800,13 +800,216 @@ interface int2
 <br/>
 
 <details>
-<summary>Не решено</summary>
+<summary>Решение</summary>
 <br/>
 
+**Настройка конфигурации bind**
 
+Изменяем содержание перечисленных строк в **`/etc/bind/options.conf`** к следующему виду:
+```
+listen-on { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27; };
 
+forwarders { 77.88.8.8; };
+recursion yes;
 
+allow-query { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27; };
 
+allow-query-cache { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27; };
+
+allow-recursion { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27; };
+```
+
+<br/>
+
+Конфигурируем ключи **rndc**:
+```
+rndc-confgen > /etc/rndckey
+```
+> Делаем вывод в файл, чтобы скопировать оттуда
+
+<br/>
+
+Приводим файл **`/etc/bind/rndc.key`** к следующему виду:
+```
+//key "rndc-key" {
+//  secret "@RNDC_KEY@";
+//};
+
+key "rndc-key" {
+  algorithm hmac-sha256;
+  secret "VTmhjyXFDo0QpaBl3UQWx1e0g9HElS2MiFDtNQzDylo=";
+};
+```
+> Первые строки закомментировали
+>
+> Вставили ключ **rndc**
+
+<br/>
+
+Проверяем на ошибки:
+```
+named-checkconf
+```
+
+<br/>
+
+Запускаем и добавляем в автозагрузку **`bind`**:
+```
+systemctl enable --now bind
+```
+
+<br/>
+
+Изменяем **`resolv.conf`** интерфейса:
+```
+search au-team.irpo
+nameserver 127.0.0.1
+nameserver 192.168.100.62
+nameserver 77.88.8.8
+search yandex.ru
+```
+
+<br/>
+
+**Создание и настройка прямой зоны**
+
+Прописываем ее в **`/etc/bind/local.conf`**:
+```
+zone "au-team.irpo" {
+  type master;
+  file "au-team.irpo.db";
+};
+```
+
+<br/>
+
+Копируем шаблон прямой зоны:
+```
+cp /etc/bind/zone/localdomain /etc/bind/zone/au-team.irpo.db
+```
+
+<br/>
+
+Задаем пользователя и права на файл:
+```
+chown named. /etc/bind/zone/au-team.irpo.db
+chmod 600 /etc/bind/zone/au-team.irpo.db
+```
+
+<br/>
+
+Приводим его к следующему виду:
+```
+$TTL    1D
+@       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                2024102200      ; serial
+                                12H             ; refresh
+                                1H              ; retry
+                                1W              ; expire
+                                1H              ; ncache
+                        )
+        IN      NS      au-team.irpo.
+        IN      A       192.168.100.62
+hq-rtr  IN      A       192.168.100.1
+br-rtr  IN      A       192.168.0.1
+hq-srv  IN      A       192.168.100.62
+hq-cli  IN      A       192.168.200.14
+br-srv  IN      A       192.168.0.30
+moodle  IN      CNAME   hq-rtr
+wiki    IN      CNAME   hq-rtr
+```
+
+<br/>
+
+Проверяем на ошибки:
+```
+named-checkconf -z
+```
+
+<br/>
+
+**Создание и настройка обратных зон**
+
+Прописываем ее в **`/etc/bind/local.conf`**:
+```
+zone "100.168.192.in-addr.arpa" {
+  type master;
+  file "100.168.192.in-addr.arpa";
+};
+
+zone "200.168.192.in-addr.arpa" {
+  type master;
+  file "200.168.192.in-addr.arpa";
+};
+```
+
+<br/>
+
+Копируем шаблон обратной зоны:
+```
+cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/100.168.192.in-addr.arpa
+cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/200.168.192.in-addr.arpa
+```
+
+<br/>
+
+Задаем пользователя и права на файл:
+```
+chown named. /etc/bind/zone/100.168.192.in-addr.arpa
+chmod 600 /etc/bind/zone/100.168.192.in-addr.arpa
+chown named. /etc/bind/zone/200.168.192.in-addr.arpa
+chmod 600 /etc/bind/zone/200.168.192.in-addr.arpa
+```
+
+<br/>
+
+Приводим их к следующему виду:
+```
+$TTL    1D
+@       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                2024102200      ; serial
+                                12H             ; refresh
+                                1H              ; retry
+                                1W              ; expire
+                                1H              ; ncache
+                        )
+        IN      NS      au-team.irpo.
+1       IN      PTR     hq-rtr.au-team.irpo.
+62      IN      PTR     hq-srv.au-team.irpo.
+```
+```
+$TTL    1D
+@       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                2024102200      ; serial
+                                12H             ; refresh
+                                1H              ; retry
+                                1W              ; expire
+                                1H              ; ncache
+                        )
+        IN      NS      au-team.irpo.
+14      IN      PTR     hq-cli.au-team.irpo.
+```
+
+<br/>
+
+Проверяем на ошибки:
+```
+named-checkconf -z
+```
+
+<br/>
+
+Перезапускаем **`bind`**:
+```
+systemctl restart bind
+```
+
+<br/>
+
+Проверяем работоспособность:
+```
+nslookup **IP-адрес/dns-имя**
+```
 
 </details>
 
