@@ -66,7 +66,7 @@
 <br/>
   
 #### Настройка имен устройств на ALT Linux
-```
+```yml
 hostnamectl set-hostname <FQDN>; exec bash
 ```
 > FQDN (Fully Qualified Domain Name) - полное доменное имя
@@ -78,7 +78,7 @@ hostnamectl set-hostname <FQDN>; exec bash
 #### Настройка имен устройств на EcoRouter
 
 Переходим в режим конфигурации и прописываем следующее:
-```
+```yml
 hostname <name>
 ```
 > `<name>` - желаемое имя устройства
@@ -216,7 +216,7 @@ hostname <name>
 #### Наcтройка IP-адресации на **HQ-SRV**, **BR-SRV**, **HQ-CLI** (настройка IP-адресации на **ISP** проводится в [следующем задании](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-2))
 
 Приводим файлы **`options`**, **`ipv4address`**, **`ipv4route`** в директории **`/etc/net/ifaces/*имя интерфейса*/`** к следующему виду (в примере **HQ-SRV**):
-```
+```yml
 DISABLED=no
 TYPE=eth
 BOOTPROTO=static
@@ -224,12 +224,12 @@ CONFIG_IPV4=yes
 ```
 > **`options`**
 
-```
+```yml
 192.168.100.62/26
 ```
 > **`ipv4address`**
 
-```
+```yml
 default via 192.168.100.1
 ```
 > **`ipv4route`**
@@ -241,21 +241,21 @@ default via 192.168.100.1
 Настраиваем интерфейс на **HQ-RTR**, который смотрит в сторону **ISP**:
 
 - Создаем логический интерфейс:
-```
+```yml
 interface int0
   description "to isp"
   ip address 172.16.4.2/28
 ```
 
 - Настраиваем физический порт:
-```
+```yml
 port ge0
   service-instance ge0/int0
     encapsulation untagged
 ```
 
 - Объединеняем порт с интерфейсом:
-```
+```yml
 interface int0
   connect port ge0 service-instance ge0/int0
 ```
@@ -265,7 +265,7 @@ interface int0
 Настраиваем интерфейсы на **HQ-RTR**, которые смотрят в сторону **HQ-SRV** и **HQ-CLI** (с разделением на VLAN):
 
 - Создаем два интерфейса:
-```
+```yml
 interface int1
   description "to hq-srv"
   ip address 192.168.100.1/26
@@ -276,7 +276,7 @@ interface int2
 ```
 
 - Настраиваем порт:
-```
+```yml
 port ge1
   service-instance ge1/int1
     encapsulation dot1q 100
@@ -287,7 +287,7 @@ port ge1
 ```
 
 - Объединяем порт с интерфейсами:
-```
+```yml
 interface int1
   connect port ge1 service-instance ge1/int1
 !
@@ -304,7 +304,7 @@ interface int2
 #### Добавление маршрута по умолчанию в EcoRouter
 
 Прописываем следующее:
-```
+```yml
 ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
 ```
 
@@ -337,7 +337,7 @@ ip route 0.0.0.0 0.0.0.0 *адрес шлюза*
 #### Настройка интерфейса, который получает IP-адрес по DHCP
 
 Файл **`options`** (в директории интерфейса) приводим к следующему виду:
-```
+```yml
 BOOTPROTO=dhcp
 TYPE=eth
 DISABLED=no
@@ -350,7 +350,7 @@ CONFIG_IPV4=yes
 #### Настройка маршрута по умолчанию
 
 Прописываем шлюз по умолчанию:
-```
+```yml
 default via *адрес шлюза*
 ```
 
@@ -363,14 +363,14 @@ default via *адрес шлюза*
 #### Включение маршрутизации
 
 В файле **`/etc/net/sysctl.conf`** изменяем строку:
-```
+```yml
 net.ipv4.ip_forward = 1
 ```
 
 <br/>
 
 Изменения в файле **`sysctl.conf`** применяем следующей командой:
-```
+```yml
 sysctl -p /etc/sysctl.conf
 ```
 
@@ -407,7 +407,7 @@ sysctl -p /etc/sysctl.conf
 #### Создание пользователя `sshuser` на серверах
 
 Создаем самого пользователя:
-```
+```yml
 useradd sshuser -u 1010
 ```
 > опция **`-u`** позволяет указать идентификатор пользователя сразу при создании
@@ -415,21 +415,21 @@ useradd sshuser -u 1010
 <br/>
 
 Задаем пароль:
-```
+```yml
 passwd sshuser
 ```
 
 <br/>
 
 Добавляем в группу **wheel**:
-```
+```yml
 usermod -aG wheel sshuser
 ```
 
 <br/>
 
 Добавляем строку в **`/etc/sudoers`**:
-```
+```yml
 sshuser ALL=(ALL) NOPASSWD:ALL
 ```
 > Позволяет запускать **sudo** без аутентификации 
@@ -439,21 +439,21 @@ sshuser ALL=(ALL) NOPASSWD:ALL
 #### Создание пользователя `net_admin` на Ecorouter
 
 Создаем самого пользователя:
-```
+```yml
 username net_admin
 ```
 
 <br/>
 
 Задаем пароль:
-```
+```yml
 password P@ssw0rd
 ```
 
 <br/>
 
 Присваиваем привилегии администратора:
-```
+```yml
 role admin
 ```
 
@@ -499,7 +499,7 @@ role admin
 <br/>
 
 Приводим указанные строки в файле **`/etc/openssh/sshd_config`** к следующим значениям:
-```
+```yml
 Port 2024
 MaxAuthTries 2
 PasswordAuthentication yes
@@ -511,7 +511,7 @@ AllowUsers  sshuser
 <br/>
 
 Создаем файл **`bannermotd`**:
-```
+```yml
 ----------------------
 Authorized access only
 ----------------------
@@ -520,7 +520,7 @@ Authorized access only
 <br/>
 
 Перезагружаем службу:
-```
+```yml
 systemctl restart sshd
 ```
 
@@ -545,21 +545,21 @@ systemctl restart sshd
 #### Создание туннеля на HQ-RTR
 
 Создаем интерфейс **GRE**-туннеля на **HQ-RTR**:
-```
+```yml
 int tunnel.0
 ```
 
 <br/>
 
 Назначаем **IP-адрес**:
-```
+```yml
 ip add 172.16.0.1/30
 ```
 
 <br/>
 
 Выставляем параметр **MTU**:
-```
+```yml
 ip mtu 1400
 ```
 > В связи с добавлением служебного заголовка появляются новые требования к допустимому значению MTU при передаче пакета. Заголовок GRE имеет размерность 4 байта, 20 байт транспортный IP заголовок, заголовок IP пакета 20 байт, таким образом возникает необходимость задавать размер допустимого MTU на интерфейсах туннеля меньше стандартного значения.
@@ -567,7 +567,7 @@ ip mtu 1400
 <br/>
 
 Задаем режим работы туннеля **GRE** и адреса **начала** и **конца** туннеля:
-```
+```yml
 ip tunnel 172.16.4.2 172.16.5.2 mode gre
 ```
 
@@ -600,7 +600,7 @@ ip tunnel 172.16.4.2 172.16.5.2 mode gre
 #### Настройка OSPF на HQ-RTR
 
 Создаем процесс **OSPF**, указываем **идентификатор маршрутизатора**, объявляем сети и указываем **пассивные** интерфейсы:
-```
+```yml
 router ospf 1
   router-id 1.1.1.1
   network 172.16.0.0/30
@@ -635,7 +635,7 @@ router ospf 1
 #### Настройка NAT на ISP
 
 Добавляем правила **`iptables`** на ISP
-```
+```yml
 iptables -t nat -A POSTROUTING -o ens224 -s 172.16.4.0/28 -j MASQUERADE
 iptables -t nat -A POSTROUTING -o ens224 -s 172.16.5.0/28 -j MASQUERADE
 ```
@@ -643,14 +643,14 @@ iptables -t nat -A POSTROUTING -o ens224 -s 172.16.5.0/28 -j MASQUERADE
 <br/>
 
 Сохраняем правила:
-```
+```yml
 iptables-save > /etc/sysconfig/iptables
 ```
 
 <br/>
 
 Включаем и добавляем **`iptables`** в автозагрузку:
-```
+```yml
 systemctl enable --now iptables
 ```
 
@@ -659,7 +659,7 @@ systemctl enable --now iptables
 #### Настройка NAT на HQ-RTR
 
 Указываем **внутренние** и **внешние** интерфейсы:
-```
+```yml
 int int1
   ip nat inside
 !
@@ -673,14 +673,14 @@ int int0
 <br/>
 
 Создаем пул:
-```
+```yml
 ip nat pool NAT_POOL 192.168.100.1-192.168.100.62,192.168.200.1-192.168.200.14
 ```
 
 <br/>
 
 Создаем **правило** трансляции адресов, указывая внешний интерфейс:
-```
+```yml
 ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 ```
 
@@ -689,7 +689,7 @@ ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 #### Настройка NAT на BR-RTR
 
 Конфигурация:
-```
+```yml
 int int1
   ip nat inside
 !
@@ -732,14 +732,14 @@ ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 <br/>
 
 Создаем **пул** для **DHCP-сервера**:
-```
+```yml
 ip pool cli_pool 192.168.200.14-192.168.200.14
 ```
 
 <br/>
 
 Настраиваем сам **DHCP-сервер**:
-```
+```yml
 dhcp-server 1
   pool cli-pool 1
   mask 255.255.255.240
@@ -760,7 +760,7 @@ dhcp-server 1
 <br/>
 
 Привязываем **DHCP-сервер** к интерфейсу (смотрящий в сторону **CLI**):
-```
+```yml
 interface int2
   dhcp-server 1
 ```
@@ -835,7 +835,7 @@ interface int2
 #### Настройка конфигурации bind
 
 Изменяем содержание перечисленных строк в **`/etc/bind/options.conf`** к следующему виду:
-```
+```yml
 listen-on { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27; };
 
 forwarders { 77.88.8.8; };
@@ -851,7 +851,7 @@ allow-recursion { 127.0.0.1; 192.168.100.0/26; 192.168.200.0/28; 192.168.0.0/27;
 <br/>
 
 Конфигурируем ключи **rndc**:
-```
+```yml
 rndc-confgen > /etc/rndckey
 ```
 > Делаем вывод в файл, чтобы скопировать оттуда
@@ -859,7 +859,7 @@ rndc-confgen > /etc/rndckey
 <br/>
 
 Приводим файл **`/etc/bind/rndc.key`** к следующему виду:
-```
+```yml
 //key "rndc-key" {
 //  secret "@RNDC_KEY@";
 //};
@@ -876,21 +876,21 @@ key "rndc-key" {
 <br/>
 
 Проверяем на ошибки:
-```
+```yml
 named-checkconf
 ```
 
 <br/>
 
 Запускаем и добавляем в автозагрузку **`bind`**:
-```
+```yml
 systemctl enable --now bind
 ```
 
 <br/>
 
 Изменяем **`resolv.conf`** интерфейса:
-```
+```yml
 search au-team.irpo
 nameserver 127.0.0.1
 nameserver 192.168.100.62
@@ -903,7 +903,7 @@ search yandex.ru
 #### Создание и настройка прямой зоны
 
 Прописываем ее в **`/etc/bind/local.conf`**:
-```
+```yml
 zone "au-team.irpo" {
   type master;
   file "au-team.irpo.db";
@@ -913,14 +913,14 @@ zone "au-team.irpo" {
 <br/>
 
 Копируем шаблон прямой зоны:
-```
+```yml
 cp /etc/bind/zone/localdomain /etc/bind/zone/au-team.irpo.db
 ```
 
 <br/>
 
 Задаем пользователя и права на файл:
-```
+```yml
 chown named. /etc/bind/zone/au-team.irpo.db
 chmod 600 /etc/bind/zone/au-team.irpo.db
 ```
@@ -928,7 +928,7 @@ chmod 600 /etc/bind/zone/au-team.irpo.db
 <br/>
 
 Приводим его к следующему виду:
-```
+```yml
 $TTL    1D
 @       IN      SOA     au-team.irpo. root.au-team.irpo. (
                                 2024102200      ; serial
@@ -951,7 +951,7 @@ wiki    IN      CNAME   hq-rtr
 <br/>
 
 Проверяем на ошибки:
-```
+```yml
 named-checkconf -z
 ```
 
@@ -960,7 +960,7 @@ named-checkconf -z
 #### Создание и настройка обратных зон
 
 Прописываем их в **`/etc/bind/local.conf`**:
-```
+```yml
 zone "100.168.192.in-addr.arpa" {
   type master;
   file "100.168.192.in-addr.arpa";
@@ -980,7 +980,7 @@ zone "0.168.192.in-addr.arpa" {
 <br/>
 
 Копируем шаблон обратной зоны:
-```
+```yml
 cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/100.168.192.in-addr.arpa
 cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/200.168.192.in-addr.arpa
 cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/0.168.192.in-addr.arpa
@@ -989,7 +989,7 @@ cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/0.168.192.in-addr.arpa
 <br/>
 
 Задаем пользователя и права на файл:
-```
+```yml
 chown named. /etc/bind/zone/100.168.192.in-addr.arpa
 chmod 600 /etc/bind/zone/100.168.192.in-addr.arpa
 chown named. /etc/bind/zone/200.168.192.in-addr.arpa
@@ -1001,7 +1001,7 @@ chmod 600 /etc/bind/zone/0.168.192.in-addr.arpa
 <br/>
 
 Приводим их к следующему виду:
-```
+```yml
 $TTL    1D
 @       IN      SOA     au-team.irpo. root.au-team.irpo. (
                                 2024102200      ; serial
@@ -1014,7 +1014,7 @@ $TTL    1D
 1       IN      PTR     hq-rtr.au-team.irpo.
 62      IN      PTR     hq-srv.au-team.irpo.
 ```
-```
+```yml
 $TTL    1D
 @       IN      SOA     au-team.irpo. root.au-team.irpo. (
                                 2024102200      ; serial
@@ -1026,7 +1026,7 @@ $TTL    1D
         IN      NS      au-team.irpo.
 14      IN      PTR     hq-cli.au-team.irpo.
 ```
-```
+```yml
 $TTL    1D
 @       IN      SOA     au-team.irpo. root.au-team.irpo. (
                                 2024102200      ; serial
@@ -1043,21 +1043,21 @@ $TTL    1D
 <br/>
 
 Проверяем на ошибки:
-```
+```yml
 named-checkconf -z
 ```
 
 <br/>
 
 Перезапускаем **`bind`**:
-```
+```yml
 systemctl restart bind
 ```
 
 <br/>
 
 Проверяем работоспособность:
-```
+```yml
 nslookup **IP-адрес/DNS-имя**
 ```
 
@@ -1078,14 +1078,14 @@ nslookup **IP-адрес/DNS-имя**
 #### Настройка часового пояса на Alt Linux
 
 Меняем часовой пояс следующей командой:
-```
+```yml
 timedatectl set-timezone Asia/Yekaterinburg
 ```
 
 <br/>
 
 Проверяем:
-```
+```yml
 timedatectl status
 ```
 
@@ -1094,14 +1094,14 @@ timedatectl status
 #### Настройка часового пояса на EcoRouter
 
 Прописываем команду:
-```
+```yml
 ntp timezone utc+5
 ```
 
 <br/>
 
 Проверяем:
-```
+```yml
 show ntp timezone
 ```
 
