@@ -188,7 +188,7 @@ hostname <name>
 
 <br/>
 
-**Наcтройка IP-адресации на **HQ-SRV**, **BR-SRV**, **HQ-CLI** (настройка IP-адресации на **ISP** производится в следующем задании)** 
+**Наcтройка IP-адресации на **HQ-SRV**, **BR-SRV**, **HQ-CLI** (настройка IP-адресации на **ISP** проводится в следующем задании)** 
 
 Приводим файлы **`options`**, **`ipv4address`**, **`ipv4route`** в директории **`/etc/net/ifaces/*имя интерфейса*/`** к следующему виду (в примере **HQ-SRV**):
 ```
@@ -930,7 +930,7 @@ named-checkconf -z
 
 **Создание и настройка обратных зон**
 
-Прописываем ее в **`/etc/bind/local.conf`**:
+Прописываем их в **`/etc/bind/local.conf`**:
 ```
 zone "100.168.192.in-addr.arpa" {
   type master;
@@ -941,6 +941,11 @@ zone "200.168.192.in-addr.arpa" {
   type master;
   file "200.168.192.in-addr.arpa";
 };
+
+zone "0.168.192.in-addr.arpa" {
+  type master;
+  file "0.168.192.in-addr.arpa";
+};
 ```
 
 <br/>
@@ -949,6 +954,7 @@ zone "200.168.192.in-addr.arpa" {
 ```
 cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/100.168.192.in-addr.arpa
 cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/200.168.192.in-addr.arpa
+cp /etc/bind/zone/127.in-addr.arpa /etc/bind/zone/0.168.192.in-addr.arpa
 ```
 
 <br/>
@@ -959,6 +965,8 @@ chown named. /etc/bind/zone/100.168.192.in-addr.arpa
 chmod 600 /etc/bind/zone/100.168.192.in-addr.arpa
 chown named. /etc/bind/zone/200.168.192.in-addr.arpa
 chmod 600 /etc/bind/zone/200.168.192.in-addr.arpa
+chown named. /etc/bind/zone/0.168.192.in-addr.arpa
+chmod 600 /etc/bind/zone/0.168.192.in-addr.arpa
 ```
 
 <br/>
@@ -988,6 +996,19 @@ $TTL    1D
                         )
         IN      NS      au-team.irpo.
 14      IN      PTR     hq-cli.au-team.irpo.
+```
+```
+$TTL    1D
+@       IN      SOA     au-team.irpo. root.au-team.irpo. (
+                                2024102200      ; serial
+                                12H             ; refresh
+                                1H              ; retry
+                                1W              ; expire
+                                1H              ; ncache
+                        )
+        IN      NS      au-team.irpo.
+1      IN      PTR      br-rtr.au-team.irpo.
+30     IN      PTR      br-srv.au-team.irpo.
 ```
 
 <br/>
