@@ -6,6 +6,32 @@
 
 <br/>
 
+Содержание:
+
+1. [Произведите базовую настройку устройств](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-1)
+
+2. [Настройка ISP](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-2)
+  
+3. [Создание локальных учетных записей](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-3)
+  
+4. [Настройте на интерфейсе HQ-RTR в сторону офиса HQ виртуальный коммутатор](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-4)
+   
+5. [Настройка безопасного удаленного доступа на серверах HQ-SRV и BR-SRV](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-5)
+  
+6. [Между офисами HQ и BR необходимо сконфигурировать IP-туннель](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-6)
+
+7. [Обеспечьте динамическую маршрутизацию](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-7)
+
+8. [Настройка динамической трансляции адресов](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-8)
+
+9. [Настройка протокола динамической конфигурации хостов](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-9)
+
+10. [Настройка DNS для офисов HQ и BR](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-10)
+
+11. [Настройте часовой пояс на всех устройствах, согласно месту проведения экзамена](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-11)
+
+<br/>
+
 <p align="center">
   <img width="450" height="600" src="https://github.com/user-attachments/assets/8ee209f5-6fed-4f03-bbe3-e202155957b3"
 <p\>
@@ -504,7 +530,7 @@ systemctl restart sshd
 
 ## Задание 6
 
-### Между офисами HQ и BR необходимо сконфигурировать ip туннель
+### Между офисами HQ и BR необходимо сконфигурировать IP-туннель
 
 - Сведения о туннеле занесите в отчёт
 
