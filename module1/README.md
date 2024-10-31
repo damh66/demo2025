@@ -4,11 +4,10 @@
 
 <br/>
 
-### Топология:
-
 <p align="center">
   <img width="450" height="600" src="https://github.com/user-attachments/assets/8ee209f5-6fed-4f03-bbe3-e202155957b3"
 <p\>
+<p align="center"><strong>Топология</strong></p>
 
 <br/>
 
@@ -58,8 +57,6 @@ hostname <name>
 
 <br/>
 
-#### Таблица подсетей
-
 <table align="center">
   <tr>
     <td align="center">Сеть</td>
@@ -97,10 +94,9 @@ hostname <name>
     <td align="center">172.16.5.1 - 172.16.5.14</td>
   </tr>
 </table>
+<p align="center"><strong>Таблица подсетей</strong></p>
 
 <br/>
-
-#### Таблица адресации
 
 <table align="center">
   <tr>
@@ -183,6 +179,7 @@ hostname <name>
     <td align="center">192.168.200.1</td>
   </tr>
 </table>
+<p align="center"><strong>Таблица адресации</strong></p>
 
 > Адресация для **ISP** взята из следующего задания
 
@@ -799,7 +796,7 @@ interface int2
   </tr>
 </table>
 
-<p align="center">Таблица 2</p>
+<p align="center"><strong>Таблица 2</strong></p>
 
 <br/>
 
