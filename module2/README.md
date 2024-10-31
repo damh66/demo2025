@@ -72,7 +72,7 @@
 #### Создание RAID
 
 Просматриваем имена добавленных дисков командой **`lsblk`** и получаем вывод:
-```
+```yml
 sdb  8:16  0  1G  0  disk
 sdc  8:32  0  1G  0  disk
 sdd  8:48  0  1G  0  disk
@@ -81,7 +81,7 @@ sdd  8:48  0  1G  0  disk
 <br/>
 
 Обнуляем суперблоки для добавленных дисков:
-```
+```yml
 mdadm --zero-superblock --force /dev/sd{b,c,d}
 ```
 > Вывод `mdadm: Unrecongised md component device - /dev/sdx` гласит о том, что диски не использовались ранее для **RAID**
@@ -89,14 +89,14 @@ mdadm --zero-superblock --force /dev/sd{b,c,d}
 <br/>
 
 Удаляем старые метаданные и подпись на дисках:
-```
+```yml
 wipefs --all --force /dev/sd{b,c,d}
 ```
 
 <br/>
 
 Создаем **RAID**:
-```
+```yml
 mdadm --create /dev/md0 -l 5 -n 3 /dev/sd{b,c,d}
 ```
 > **/dev/md0** - название RAID после сборки
@@ -110,7 +110,7 @@ mdadm --create /dev/md0 -l 5 -n 3 /dev/sd{b,c,d}
 <br/>
 
 Проверяем командой **`lsblk`**:
-```
+```yml
 sdb  8:16  0  1G  0  disk
   md0  9:0  0  2G  0  raid5
 sdc  8:32  0  1G  0  disk
@@ -124,14 +124,14 @@ sdd  8:48  0  1G  0  disk
 #### Создание файла `mdadm.conf`
 
 Создаем директорию для файла:
-```
+```yml
 mkdir /etc/mdadm
 ```
 
 <br/>
 
 Заполняем файл информацией:
-```
+```yml
 echo "DEVICE partitions" > /etc/mdadm/mdadm.conf
 mdadm --detail --scan | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
 ```
@@ -141,28 +141,28 @@ mdadm --detail --scan | awk '/ARRAY/ {print}' >> /etc/mdadm/mdadm.conf
 #### Создание файловой системы и монтирование RAID-массива
 
 Создаем директорию для монтирования массива:
-```
+```yml
 mkdir /mnt/raid5
 ```
 
 <br/>
 
 Добавляем строку в **`/etc/fstab`**:
-```
+```yml
 /dev/md0  /mnt/raid5  ext4  defaults  0  0
 ```
 
 <br/>
 
 Монтируем:
-```
+```yml
 mount -a
 ```
 
 <br/>
 
 Проверяем командой **`df -h`** и получаем вывод:
-```
+```yml
 /dev/md0  2.0G  24K  1.9G  1%  /mnt/raid5
 ```
 
@@ -171,28 +171,28 @@ mount -a
 #### Настройка NFS
 
 Устанавливаем пакеты для **NFS-сервера**:
-```
+```yml
 apt-get install -y nfs-{server,utils}
 ```
 
 <br/>
 
 Создаем директорию для общего доступа:
-```
+```yml
 mkdir /mnt/raid5/nfs
 ```
 
 <br/>
 
 Выдаем права на чтение и запись этой директории:
-```
+```yml
 chmod 766 /mnt/raid5/nfs
 ```
 
 <br/>
 
 Добавляем строку в **`/etc/exports`**:
-```
+```yml
 /mnt/raid5/nfs 192.168.200.0/28(rw,no_root_squash)
 ```
 > **/mnt/raid5/nfs** - общий ресурс
@@ -206,7 +206,7 @@ chmod 766 /mnt/raid5/nfs
 <br/>
 
 Экспортируем файловую систему, которую прописали ранее:
-```
+```yml
 exportfs -arv
 ```
 > **-a** - экспортировать все указанные каталоги
@@ -218,7 +218,7 @@ exportfs -arv
 <br/>
 
 Запускаем и добавляем в автозагрузку **NFS-сервер**:
-```
+```yml
 systemctl enable --now nfs-server
 ```
 
@@ -227,42 +227,42 @@ systemctl enable --now nfs-server
 #### Настройка клиента
 
 Устанавливаем требуемые пакеты для **NFS-клиента**:
-```
+```yml
 apt-get update && apt-get install -y nfs-{utils,clients}
 ```
 
 <br/>
 
 Создаем директорию для общего ресурса:
-```
+```yml
 mkdir /mnt/nfs
 ```
 
 <br/>
 
 Выдаем права этой директории:
-```
+```yml
 chmod 777 /mnt/nfs
 ```
 
 <br/>
 
 Добавляем строку в **`/etc/fstab`** для автоматического монтирования общего ресурса:
-```
+```yml
 192.168.100.62:/mnt/raid5/nfs  /mnt/nfs  nfs  defaults  0  0
 ```
 
 <br/>
 
 Монтируем общий ресурс:
-```
+```yml
 mount -a
 ```
 
 <br/>
 
 Вводим команду **`df -h`** и получаем вывод:
-```
+```yml
 192.168.100.62:/mnt/raid5/nfs  2,0G  0  1,9G  0%  /mnt/nfs
 ```
 </details>
