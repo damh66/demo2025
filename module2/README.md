@@ -268,3 +268,118 @@ mount -a
 </details>
 
 <br/>
+
+## Задание 3
+
+### Настройте службу сетевого времени на базе сервиса chrony
+
+- В качества сервера выступает HQ-RTR
+
+- На HQ-RTR настройте сервер chrony, выберите стратум 5
+
+- В качестве клиентов настройте HQ-SRV, HQ-CLI, BR-RTR, BR-SRV
+
+<br/>
+
+<details>
+<summary>Не решено</summary>
+<br/>
+
+</details>
+
+<br/>
+
+## Задание 4
+
+### Сконфигурируйте ansible на сервере BR-SRV
+
+- Сформируйте файл инвентаря, в инвентарь должны входить HQ-SRV, HQ-CLI, HQ-RTR и BR-RTR
+
+- Рабочий каталог ansible должен располагаться в /etc/ansible
+
+- Все указанные машины должны без предупреждений и ошибок отвечать pong на команду ping в ansible посланную с BR-SRV
+
+<br/>
+
+<details>
+<summary>Решение (не полностью)</summary>
+<br/>
+
+#### Установка Python
+
+Скачиваем архив с последней версией **Python** во временную директорию **`/tmp`**:
+```yml
+wget https://www.python.org/ftp/python/3.14.0/Python-3.14.0a1.tgz
+```
+
+<br/>
+
+Разархивируем скачанный архив:
+```yml
+tar zxvf Python-3.14.0a1.tgz
+```
+
+<br/>
+
+Копируем полученную папку и сразу переходим в нее:
+```yml
+cp -r Python-3.14.0a1 /usr/local/bin
+```
+
+<br/>
+
+Устанавливаем зависимости для компиляции:
+```yml
+apt-get install zlib-devel libssl-devel libsqlite3-devel libffi-devel gcc pip
+```
+
+<br/>
+
+Добавляем параметры для компиляции:
+```yml
+./configure --prefix=/usr/local --with-ensurepip=install
+```
+> **--prefix=/usr/local** - указание корневой директории
+>
+> **--with-ensurepip=install** - обеспечивает поддержку начальной загрузки установщика pip в виртуальную среду или существующую установку Python
+
+<br/>
+
+Командой **`python3.14`** проверяем, что **Python** установился, получив следующий вывод:
+```yml
+Python 3.14.0a1 (main, Nov 2 2024, 28:18:22) [GCC 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+```
+
+<br/>
+
+#### Создание виртуального окружения
+
+Создаем директорию для **ansible**:
+```yml
+mkdir /etc/ansible
+```
+
+</br>
+
+В ранее созданной директории создаем виртуальной окружение:
+```yml
+python3.14 -m vent .env
+```
+
+<br/>
+
+Активируем его:
+```yml
+source .env/bin/activate
+```
+
+<br/>
+
+После активации окружения мы увидим изменения оболочки:
+```yml
+(.env) [root@br-srv ~]#
+```
+
+</details>
