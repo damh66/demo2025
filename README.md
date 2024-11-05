@@ -18,18 +18,20 @@
 
 ### Используемые операционные системы
 
-- **Alt Linux** (**[Документация](https://www.altlinux.org/%D0%93%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0)**)
+- **EcoRouter** (**[Документация](https://docs.rdpin.ru/EcoRouter-UserGuide.pdf)**, **[Образ](https://disk.yandex.ru/d/_0GFwvAGVm4Iow)**)
+   > *HQ-RTR*
+   >
+   > *BR-RTR*
+
+- **Alt Linux Server** (**[Документация](https://docs.altlinux.org/ru-RU/alt-server/10.1/html/alt-server/index.html)**, **[Образ](https://www.basealt.ru/alt-server/download)**)
    > *ISP*
    >
    > *HQ-SRV*
    >
-   > *HQ-CLI*
-   >
    > *BR-SRV*
+
+- **Alt Linux Workstation** (**[Документация](https://docs.altlinux.org/ru-RU/alt-workstation/10.1/html/alt-workstation/index.html)**, **[Образ](https://www.basealt.ru/alt-workstation/download)**)
+   > *HQ-CLI*
  
-- **EcoRouter** (**[Документация](https://docs.rdpin.ru/EcoRouter-UserGuide.pdf)**)
-   > *HQ-RTR*
-   >
-   > *BR-RTR*
 
 #
