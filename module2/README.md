@@ -10,6 +10,10 @@
 
 2. **[Сконфигурируйте файловое хранилище](https://github.com/damh66/demo2025/blob/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-2)**
 
+3. **[Настройте службу сетевого времени на базе сервиса chrony](https://github.com/damh66/demo2025/edit/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-3)**
+
+4. **[Сконфигурируйте ansible на сервере BR-SRV](https://github.com/damh66/demo2025/edit/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-4)**
+
 <br/>
 
 <br/>
@@ -282,8 +286,60 @@ mount -a
 <br/>
 
 <details>
-<summary>Не решено</summary>
+<summary>Решение (не полностью)</summary>
 <br/>
+
+#### Конфигурация сервера
+
+Задаем дату и время, часовой пояс и IP-адрес **NTP-сервера** на **HQ-RTR**:
+```yml
+ntp timezone utc+5
+ntp date YYYY.MM.DD HH:MM
+ntp server 192.168.100.1
+```
+
+<br/>
+
+#### Конфигурация клиента Alt Linux
+
+Скачиваем пакет **chrony**:
+```yml
+apt-get install chrony
+```
+
+<br/>
+
+Добавляем строку в **`/etc/chrony.conf`**:
+```yml
+echo "server 192.168.100.1 iburst prefer >> /etc/chrony.conf
+```
+> **iburst** - принудительно отправляет пакеты для точности синхронизации
+>
+> **prefer** - отдает приоритет этому серверу
+
+<br/>
+
+Запускаем утилиту **chrony** и добавляем ее в автозагрузку:
+```yml
+systemctl enable --now chronyd
+```
+
+<br/>
+
+Проверяем с помощью следующих команд:
+```yml
+timedatectl
+chronyc sources
+```
+> **timedatectl** - указывает статистику о времени (в том числе и о синхронизации с NTP-сервером)
+>
+> **chronyc sources** - просмотр текущих источников времени
+
+<br/>
+
+#### Конфигурация клиента EcoRouter
+
+
 
 </details>
 
