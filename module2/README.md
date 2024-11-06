@@ -286,19 +286,111 @@ mount -a
 <br/>
 
 <details>
-<summary>Решение (не полностью)</summary>
+<summary>Решение</summary>
 <br/>
 
-#### Конфигурация сервера
+**Так как на HQ-RTR нет утилиты chrony и возможность выбора стратума, NTP-сервером будет выступать ISP**
 
-Задаем дату и время, часовой пояс и IP-адрес **NTP-сервера** на **HQ-RTR**:
+#### Конфигурация сервера (ISP)
+
+Скачиваем пакет **chrony**:
 ```yml
-ntp timezone utc+5
-ntp date YYYY.MM.DD HH:MM
-ntp server 192.168.100.1
+apt-get install -y chrony
 ```
 
 <br/>
+
+Приводим начало файла **`/etc/chrony.conf`** к следующему виду:
+```yml
+# Use public servers from the pool.ntp.org project.
+# Please consider joining the pool (https://www.pool.ntp.org/join.html
+#pool pool.ntp.org iburst
+
+server 127.0.0.1 iburst prefer
+hwtimestamp *
+local stratum 5
+allow 0/0
+```
+> **server 127.0.0.1** - указываем сервером синхронизации самого себя
+> > **iburst** - принудительно отправляет пакеты для точности синхронизации
+> > 
+> > **prefer** - отдает приоритет этому серверу
+>
+> **hwtimestamp** * - указывает сетевой интерфейс как собственный источник времени и синхронизирует клиентов с ним
+>
+> **local stratum 5** - указание иерархического уровня
+>
+> **allow 0/0** - разрешает подключение с любого IP-адреса
+
+<br/>
+
+Запускаем и добавляем в автозагрузку утилиту **chronyd**:
+```yml
+systemctl enable --now chronyd
+```
+
+<br/>
+
+#### Проверка конфигурации сервера
+
+Получаем вывод источников времени с помощью команды:
+```yml
+chronyc sources
+```
+> Вывод:
+> ```yml
+> MS Name/IP address        Stratum  Poll  Reach  LastRx  Last  sample
+> =============================================================================
+> ^/ localhost.localdomain  0        8     377    -       +0ns[  +0ns] +/-  0ns
+> ```
+
+<br/>
+
+Получаем вывод **уровня стратума** с помощью связки команд:
+```yml
+chronyc tracking | grep Stratum
+```
+> Вывод:
+> ```yml
+> Stratum: 5
+> ```
+
+<br/>
+
+#### Конфигурация клиента EcoRouter
+
+Указываем IP-адрес **NTP-сервера**:
+```
+ntp server 172.16.4.1
+```
+
+<br/>
+
+Указываем часовой пояс:
+```
+ntp timezone utc+5
+```
+
+<br/>
+
+#### Проверка конфигурации клиента EcoRouter
+
+Проверяем командой:
+```
+show ntp status
+```
+> Вывод:
+> ```
+> Status Description
+> *      best
+> +      sync
+> -      failed
+> ?      unknown
+>
+> ----------------------------------------------------------------------------------------------------
+> Status  |  VR name  |  Server  |  Stratum  |  Delay  |  Version  |  Offset  |  Last  |  Source IP
+> ----------------------------------------------------------------------------------------------------
+>        *|    default|172.16.4.1|          5|   0.0391|          4|    0.0036|    3:26|        
 
 #### Конфигурация клиента Alt Linux
 
@@ -311,7 +403,7 @@ apt-get install chrony
 
 Добавляем строку в **`/etc/chrony.conf`**:
 ```yml
-echo "server 192.168.100.1 iburst prefer >> /etc/chrony.conf
+echo "server 172.16.4.1 iburst prefer >> /etc/chrony.conf
 ```
 > **iburst** - принудительно отправляет пакеты для точности синхронизации
 >
@@ -326,20 +418,9 @@ systemctl enable --now chronyd
 
 <br/>
 
-Проверяем с помощью следующих команд:
-```yml
-timedatectl
-chronyc sources
-```
-> **timedatectl** - указывает статистику о времени (в том числе и о синхронизации с NTP-сервером)
->
-> **chronyc sources** - просмотр текущих источников времени
+#### Проверка конфигурации клиента Alt Linux
 
-<br/>
-
-#### Конфигурация клиента EcoRouter
-
-
+Проверка клиента аналогична проверке NTP-сервера на AltLinux
 
 </details>
 
