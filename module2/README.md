@@ -539,4 +539,101 @@ source .env/bin/activate
 (.env) [root@br-srv ~]#
 ```
 
+#### Конфигурация SSH Alt Linux
+
+Затронутые строки в конфигурационном файле **SSH** **`/etc/openssh/sshd_config`** должны выглядеть следующим образом:
+```yml
+Port 2024
+MaxAuthTries 2
+PubkeyAuthentication yes
+PasswordAuthentication yes
+Banner /etc/openssh/bannermotd
+AllowUsers  sshuser
+```
+> Первоначальная настройка **SSH** производилась в задании **[Настройка безопасного удаленного доступа на серверах HQ-SRV и BR-SRV](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-5)** из **[Модуля 1](https://github.com/damh66/demo2025/tree/main/module1#demo2025---%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D1%8C-1)**
+
+<br/>
+
+На **BR-SRV** генерируем ключи **RSA**:
+```yml
+ssh-keygen -t rsa
+```
+> Расположение ключей и пароль не важны
+
+<br/>
+
+Передаем ключи на **HQ-SRV** и **HQ-CLI**:
+```yml
+ssh-copy-id sshuser@192.168.100.62 -p 2024
+ssh-copy-id sshuser@192.168.200.14 -p 2024
+```
+
+<br/>
+
+#### Конфигурация Ansible
+
+Для начала создаем **конфигурационный файл**:
+```yml
+[defaults]
+
+inventory = ./inventory.yml
+interpreter_python = /usr/bin/python3.9
+ask_pass = False
+host_key_checking = False
+```
+> **inventory = ./inventory.yml** - путь до инвентарного файла
+>
+> **interpreter_python = /usr/bin/python3.9** - указание python3.9 в качестве интерпретатора Python
+>
+> **ask_pass = False** - отказ от запроса пароля для подключения
+>
+> **host_key_checking = False** - отключение проверки ключа хоста
+
+<br/>
+
+Далее заполняем инвентарный файл:
+```yml
+VMs:
+  hosts:
+    HQ-SRV:
+      ansible_host: 192.168.100.62
+      ansible_user: sshuser
+      ansible_port: 2024
+    HQ-CLI:
+      ansible_host: 192.168.200.14
+      ansible_user: sshuser
+      ansible_port: 2024
+    HQ-RTR:
+      ansible_host: 192.168.100.1
+      ansible_user: net_admin
+      ansible_ssh_password: P@ssw0rd
+    BR-RTR:
+      ansible_host: 192.168.0.1
+      ansible_user: net_admin
+      ansible_password: P@ssw0rd
+```
+
+<br/>
+
+Создаем директорию **playbooks**, создаем в ней файл **`ping.yml`** и прописываем следующее:
+```yml
+---
+
+- name: ping all VMs
+  hosts: all
+  gather_facts: true
+  tasks:
+  - name: ping
+    shell: ping -c 3 {{ ansible_host }}
+```
+
+<br/>
+
+Запускаем созданный плейбук:
+```yml
+ansible-playbook /etc/ansible/playbooks/ping.yml
+```
+
 </details>
+
+<br/>
