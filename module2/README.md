@@ -75,12 +75,16 @@
 
 #### Создание RAID
 
-Просматриваем имена добавленных дисков командой **`lsblk`** и получаем вывод:
+Просматриваем имена добавленных дисков:
 ```yml
-sdb  8:16  0  1G  0  disk
-sdc  8:32  0  1G  0  disk
-sdd  8:48  0  1G  0  disk
+lsblk
 ```
+> Вывод:
+> ```yml
+> sdb  8:16  0  1G  0  disk
+> sdc  8:32  0  1G  0  disk
+> sdd  8:48  0  1G  0  disk
+> ```
 
 <br/>
 
@@ -88,7 +92,11 @@ sdd  8:48  0  1G  0  disk
 ```yml
 mdadm --zero-superblock --force /dev/sd{b,c,d}
 ```
-> Вывод `mdadm: Unrecongised md component device - /dev/sdx` гласит о том, что диски не использовались ранее для **RAID**
+> Вывод:
+> ```yml
+> mdadm: Unrecongised md component device - /dev/sdx
+> ```
+> > Гласит о том, что диски не использовались ранее для **RAID**
 
 <br/>
 
@@ -113,15 +121,19 @@ mdadm --create /dev/md0 -l 5 -n 3 /dev/sd{b,c,d}
 
 <br/>
 
-Проверяем командой **`lsblk`**:
+Проверяем:
 ```yml
-sdb  8:16  0  1G  0  disk
-  md0  9:0  0  2G  0  raid5
-sdc  8:32  0  1G  0  disk
-  md0  9:0  0  2G  0  raid5
-sdd  8:48  0  1G  0  disk
-  md0  9:0  0  2G  0  raid5
+lsblk
 ```
+> Вывод:
+> ```yml
+> sdb  8:16  0  1G  0  disk
+>   md0  9:0  0  2G  0  raid5
+> sdc  8:32  0  1G  0  disk
+>   md0  9:0  0  2G  0  raid5
+> sdd  8:48  0  1G  0  disk
+>   md0  9:0  0  2G  0  raid5
+> ```
 
 <br/>
 
@@ -165,10 +177,14 @@ mount -a
 
 <br/>
 
-Проверяем командой **`df -h`** и получаем вывод:
+Проверяем монтирование:
 ```yml
-/dev/md0  2.0G  24K  1.9G  1%  /mnt/raid5
+df -h
 ```
+> Вывод:
+> ```yml
+> /dev/md0  2.0G  24K  1.9G  1%  /mnt/raid5
+> ```
 
 <br/>
 
@@ -265,10 +281,14 @@ mount -a
 
 <br/>
 
-Вводим команду **`df -h`** и получаем вывод:
+Проверяем монтирование:
 ```yml
-192.168.100.62:/mnt/raid5/nfs  2,0G  0  1,9G  0%  /mnt/nfs
+df -h
 ```
+> Вывод:
+> ```yml
+> 192.168.100.62:/mnt/raid5/nfs  2,0G  0  1,9G  0%  /mnt/nfs
+> ```
 </details>
 
 <br/>
