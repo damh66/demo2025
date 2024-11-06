@@ -360,14 +360,14 @@ chronyc tracking | grep Stratum
 #### Конфигурация клиента EcoRouter
 
 Указываем IP-адрес **NTP-сервера**:
-```
+```yml
 ntp server 172.16.4.1
 ```
 
 <br/>
 
 Указываем часовой пояс:
-```
+```yml
 ntp timezone utc+5
 ```
 
@@ -376,11 +376,11 @@ ntp timezone utc+5
 #### Проверка конфигурации клиента EcoRouter
 
 Проверяем командой:
-```
+```yml
 show ntp status
 ```
 > Вывод:
-> ```
+> ```yml
 > Status Description
 > *      best
 > +      sync
