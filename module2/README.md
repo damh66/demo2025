@@ -606,7 +606,7 @@ VMs:
     HQ-RTR:
       ansible_host: 192.168.100.1
       ansible_user: net_admin
-      ansible_ssh_password: P@ssw0rd
+      ansible_password: P@ssw0rd
     BR-RTR:
       ansible_host: 192.168.0.1
       ansible_user: net_admin
@@ -615,24 +615,16 @@ VMs:
 
 <br/>
 
-Создаем директорию **playbooks**, создаем в ней файл **`ping.yml`** и прописываем следующее:
-```yml
----
-
-- name: ping all VMs
-  hosts: all
-  gather_facts: true
-  tasks:
-  - name: ping
-    shell: ping -c 3 {{ ansible_host }}
+Выполняем команду для **ping**`а всех машин:
 ```
-
-<br/>
-
-Запускаем созданный плейбук:
-```yml
-ansible-playbook /etc/ansible/playbooks/ping.yml
+ansible -m ping all
 ```
+> **-m (--module-name)** - параметр для указания модуля
+>
+> **ping** - модуль
+>
+> **all** - выполнить модуль для всех виртуальных машин, указанных в инвентарном файле
+
 
 </details>
 
