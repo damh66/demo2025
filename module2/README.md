@@ -7,15 +7,15 @@
 ### Содержание
 
 1. **[Настройте доменный контроллер Samba на машине BR-SRV](https://github.com/damh66/demo2025/blob/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-1)**
-
+    > Не решено
 2. **[Сконфигурируйте файловое хранилище](https://github.com/damh66/demo2025/blob/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-2)**
 
 3. **[Настройте службу сетевого времени на базе сервиса chrony](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-3)**
 
 4. **[Сконфигурируйте ansible на сервере BR-SRV](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-4)**
-
+    > Решено не полностью
 5. **[Развертывание приложений в Docker на сервере BR-SRV](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-5)**
-
+    > Не решено
 6. **[На маршрутизаторах сконфигурируйте статическую трансляцию портов](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-6)**
 
 <br/>
