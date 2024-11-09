@@ -603,9 +603,9 @@ ip tunnel 172.16.4.2 172.16.5.2 mode gre
 ```yml
 router ospf 1
   router-id 1.1.1.1
-  network 172.16.0.0/30
-  network 192.168.100.0/26
-  network 192.168.200.0/28
+  network 172.16.0.0/30 area 0
+  network 192.168.100.0/26 area 0
+  network 192.168.200.0/28 area 0
   passive-interface default
   no passive-interface tunnel.0
 ```
