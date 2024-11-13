@@ -15,7 +15,7 @@
 4. **[Сконфигурируйте ansible на сервере BR-SRV](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-4)**
     > Решено не полностью
 5. **[Развертывание приложений в Docker на сервере BR-SRV](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-5)**
-    > Не решено
+    > Решено не полностью
 6. **[На маршрутизаторах сконфигурируйте статическую трансляцию портов](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-6)**
 
 <br/>
@@ -659,10 +659,200 @@ ansible -m ping all
 <br/>
 
 <details>
-<summary>Не решено</summary>
+<summary>Решение (не полностью)</summary>
 <br/>
 
+#### Конфигурация файла Docker-Compose
 
+Останавливаем службу **ahttpd**, которая занимает порт **8080**:
+```yml
+systemctl disable —now ahttpd
+```
+> **ahttpd** - модуль для веб-интерфейса, который предназначен для управления настройками web-сервера, обеспечивающего работоспособность **Центра управления системой**
+
+<br/>
+
+Устанавливаем **docker** и **docker-compose**:
+```yml
+apt-get install -y docker-{ce,compose}
+```
+
+<br/>
+
+Включаем и добавляем в автозагрузку **docker**:
+```yml
+systemctl enable --now docker
+```
+
+<br/>
+
+В домашней директории пользователя создаем файл **`wiki.yml`** и прописываем следующее:
+```yml
+services:
+  mediawiki:
+    container_name: wiki
+    image: mediawiki
+    restart: always
+    ports:
+      - "8080:80"
+    links:
+      - db
+#    volumes:
+#      - ./LocalSettings.php:/var/www/html/LocalSettings.php
+
+  db:
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_DATABASE: mediawiki
+      MARIADB_USER: wiki
+      MARIADB_PASSWORD: WikiP@ssw0rd
+      MARIADB_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+```
+> **services** - основной раздел, в котором описываются сервисы
+>
+> **container_name** - имя контейнера
+>
+> **image** - имя образа
+>
+> **restart** - перезапуск контейнера, если он остановлен
+>
+> **ports** - проброс портов
+>
+> **links** - ссылка на контейнер
+> 
+> **volumes** - проброс папок
+>
+> **environment** - переменные окружения
+
+<br/>
+
+Собираем стек контейнеров:
+```yml
+docker-compose -f wiki.yml up -d
+```
+> **-f** - указание на файл
+>
+> **up** - запуск
+>
+> **-d** - запуск в фоновом режиме
+
+<br/>
+
+#### Установка MediaWiki в веб-интерфейсе
+
+На **HQ-CLI** в браузере вводим **`http://192.168.0.30:8080`** и начинаем установку **MediaWiki**, нажав на **set up the wiki**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d396a8fb-486e-4cdf-96b2-d7233b5e81f3"
+</p>
+
+<br/>
+
+Выбираем язык:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c59c1003-75e6-4dbb-bfa2-9808fa31d51f"
+</p>
+
+<br/>
+
+Проверяем внешнюю среду и нажимаем **далее**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b09a45e6-eb92-4d8f-b2c4-4a280352bdf0"
+</p>
+
+<br/>
+
+Заполняем параметры для базы данных в соответствии с заданными переменными окружения в **wiki.yml**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/12782a4c-ae67-4f94-845d-92f7b59e8542"
+</p>
+
+<br/>
+
+Оставляем галочку и жмем **далее**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2ebdc0e0-027d-4aff-9d00-4c1b4e38c358"
+</p>
+
+<br/>
+
+Заполняем информацию об учетной записи администратора:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0b60037a-7e9f-4f0f-9290-a4d0b2f457fb"
+</p>
+
+<br/>
+
+Подтверждаем установку **MediaWiki**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d338a392-ce13-414c-ba16-2e45743d1d4f"
+</p>
+
+<br/>
+
+После окончания установки нажимаем **далее**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/158beb5a-9715-46cc-8af5-1e3e0b05176d"
+</p>
+
+<br/>
+
+Получаем конфигурационный файл, который нужно передать на **BR-SRV**:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/923ad086-0244-4b4b-be83-1973c193f355"
+</p>
+
+<br/>
+
+#### Правка файла Docker-Compose
+
+Перемещаем файл **`LocalSettings.php`** в домашнюю директорию пользователя **sshuser**:
+```yml
+mv /home/user/Загрузки/LocalSettings.php /home/sshuser
+```
+> В моем случае, ранние действия выполнялись из под пользователя **user**, поэтому загруженный файл оказался именно в его папке
+
+<br/>
+
+Передаем файл с **HQ-CLI** на **BR-SRV**:
+```yml
+scp -P 2024 /home/sshuser/LocalSettings.php sshuser@192.168.0.30:/home/sshuser
+```
+> **-P** - указание порта SSH
+>
+> **/home/sshuser/LocalSettings.php** - файл, который будет передан
+>
+> **sshuser@192.168.0.30:/home/sshuser** - имя-пользователя@IP-адрес:директория-назначения
+
+<br/>
+
+На **BR-SRV** перемещаем файл в домашнюю директорию **root**:
+```yml
+mv /home/sshuser/LocalSettings.php /root
+```
+> Если файл **wiki.yml** создавали в домашней директории другого пользователя - перемещаем туда
+
+<br/>
+
+В файле **wiki.yml** расскоментируем следующие строки:
+```yml
+volumes:
+  - ./LocalSettings.php:/var/www/html/LocalSettings.php
+```
+
+<br/>
+
+Перезапускаем запущенные **Docker**`ом сервисы:
+```yml
+docker compose -f wiki.yml stop
+docker compose -f wiki.yml up -d
+```
 
 </details>
 
