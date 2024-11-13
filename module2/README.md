@@ -749,63 +749,63 @@ docker-compose -f wiki.yml up -d
 
 На **HQ-CLI** в браузере вводим **`http://192.168.0.30:8080`** и начинаем установку **MediaWiki**, нажав на **set up the wiki**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d396a8fb-486e-4cdf-96b2-d7233b5e81f3"
+  <img width="600" src="https://github.com/user-attachments/assets/d396a8fb-486e-4cdf-96b2-d7233b5e81f3"
 </p>
 
 <br/>
 
 Выбираем язык:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c59c1003-75e6-4dbb-bfa2-9808fa31d51f"
+  <img width="400" src="https://github.com/user-attachments/assets/c59c1003-75e6-4dbb-bfa2-9808fa31d51f"
 </p>
 
 <br/>
 
 Проверяем внешнюю среду и нажимаем **далее**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b09a45e6-eb92-4d8f-b2c4-4a280352bdf0"
+  <img width="600" src="https://github.com/user-attachments/assets/b09a45e6-eb92-4d8f-b2c4-4a280352bdf0"
 </p>
 
 <br/>
 
 Заполняем параметры для базы данных в соответствии с заданными переменными окружения в **wiki.yml**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/12782a4c-ae67-4f94-845d-92f7b59e8542"
+  <img width="250" src="https://github.com/user-attachments/assets/edbfc738-5406-4d3f-a73f-9cdad1f15398"
 </p>
 
 <br/>
 
 Оставляем галочку и жмем **далее**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/2ebdc0e0-027d-4aff-9d00-4c1b4e38c358"
+  <img width="550" src="https://github.com/user-attachments/assets/2ebdc0e0-027d-4aff-9d00-4c1b4e38c358"
 </p>
 
 <br/>
 
 Заполняем информацию об учетной записи администратора:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/0b60037a-7e9f-4f0f-9290-a4d0b2f457fb"
+  <img width="500" src="https://github.com/user-attachments/assets/0b60037a-7e9f-4f0f-9290-a4d0b2f457fb"
 </p>
 
 <br/>
 
 Подтверждаем установку **MediaWiki**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d338a392-ce13-414c-ba16-2e45743d1d4f"
+  <img width="500" src="https://github.com/user-attachments/assets/d338a392-ce13-414c-ba16-2e45743d1d4f"
 </p>
 
 <br/>
 
 После окончания установки нажимаем **далее**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/158beb5a-9715-46cc-8af5-1e3e0b05176d"
+  <img width="450" src="https://github.com/user-attachments/assets/158beb5a-9715-46cc-8af5-1e3e0b05176d"
 </p>
 
 <br/>
 
 Получаем конфигурационный файл, который нужно передать на **BR-SRV**:
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/923ad086-0244-4b4b-be83-1973c193f355"
+  <img width="800" src="https://github.com/user-attachments/assets/923ad086-0244-4b4b-be83-1973c193f355"
 </p>
 
 <br/>
