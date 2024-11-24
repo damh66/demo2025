@@ -735,7 +735,7 @@ volumes:
 
 Собираем стек контейнеров:
 ```yml
-docker-compose -f wiki.yml up -d
+docker compose -f wiki.yml up -d
 ```
 > **-f** - указание на файл
 >
