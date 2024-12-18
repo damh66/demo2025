@@ -423,6 +423,8 @@ show ntp status
 > ----------------------------------------------------------------------------------------------------
 >        *|    default|172.16.4.1|          5|   0.0391|          4|    0.0036|    3:26|        
 
+<br/>
+
 #### Конфигурация NTP-клиента Alt Linux
 
 Скачиваем пакет **chrony**:
@@ -434,7 +436,7 @@ apt-get install chrony
 
 Добавляем строку в **`/etc/chrony.conf`**:
 ```yml
-echo "server 172.16.4.1 iburst prefer >> /etc/chrony.conf
+echo "server 172.16.4.1 iburst prefer" >> /etc/chrony.conf
 ```
 > **iburst** - принудительно отправляет пакеты для точности синхронизации
 >
