@@ -477,6 +477,13 @@ systemctl enable --now chronyd
 
 #### Установка Python
 
+Скачиваем утилиту **wget**:
+```yml
+apt-get install -y wget
+```
+
+<br/>
+
 Скачиваем архив с последней версией **Python** во временную директорию **`/tmp`**:
 ```yml
 wget https://www.python.org/ftp/python/3.14.0/Python-3.14.0a1.tgz
@@ -494,6 +501,7 @@ tar zxvf Python-3.14.0a1.tgz
 Копируем полученную папку и сразу переходим в нее:
 ```yml
 cp -r Python-3.14.0a1 /usr/local/bin
+cd /usr/local/bin/Python-3.14.0a1/
 ```
 
 <br/>
@@ -535,7 +543,7 @@ mkdir /etc/ansible
 
 В ранее созданной директории создаем виртуальной окружение:
 ```yml
-python3.14 -m vent .env
+python3.14 -m venv .env
 ```
 
 <br/>
