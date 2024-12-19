@@ -523,6 +523,15 @@ apt-get install ansible zlib-devel libssl-devel libsqlite3-devel libffi-devel gc
 
 <br/>
 
+Компилируем:
+```yml
+make
+make install
+```
+
+<br/>
+
+
 Командой **`python3.14`** проверяем, что **Python** установился, получив следующий вывод:
 ```yml
 Python 3.14.0a1 (main, Nov 2 2024, 28:18:22) [GCC 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2)] on linux
