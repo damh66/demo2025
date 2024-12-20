@@ -434,9 +434,10 @@ apt-get install chrony
 
 <br/>
 
-Добавляем строку в **`/etc/chrony.conf`**:
+Приводим начало файла **`/etc/chrony.conf`** к следующему виду:
 ```yml
-echo "server 172.16.4.1 iburst prefer" >> /etc/chrony.conf
+#pool pool.ntp.org iburst
+server 172.16.4.1 iburst prefer
 ```
 > **iburst** - принудительно отправляет пакеты для точности синхронизации
 >
