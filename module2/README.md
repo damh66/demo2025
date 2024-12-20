@@ -508,7 +508,7 @@ cd /usr/local/bin/Python-3.14.0a1/
 
 Устанавливаем зависимости для компиляции:
 ```yml
-apt-get install ansible zlib-devel libssl-devel libsqlite3-devel libffi-devel gcc pip
+apt-get install -y ansible zlib-devel libssl-devel libsqlite3-devel libffi-devel gcc pip
 ```
 
 <br/>
