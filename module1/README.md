@@ -64,7 +64,11 @@
 <details>
 <summary>Решение</summary>
 <br/>
-  
+
+**Полное доменное имя можно посмотреть в таблице для [Задания 10](https://github.com/damh66/demo2025/tree/main/module1#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-10)**
+
+<br/>
+
 #### Настройка имен устройств на ALT Linux
 ```yml
 hostnamectl set-hostname <FQDN>; exec bash
