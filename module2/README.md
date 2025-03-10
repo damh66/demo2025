@@ -473,102 +473,8 @@ systemctl enable --now chronyd
 <br/>
 
 <details>
-<summary>Решено не полностью (проблема в передаче ключей на EcoRouter)</summary>
+<summary>Решение</summary>
 <br/>
-
-#### Установка Python
-
-Скачиваем утилиту **wget**:
-```yml
-apt-get install -y wget
-```
-
-<br/>
-
-Скачиваем архив с последней версией **Python** во временную директорию **`/tmp`**:
-```yml
-wget https://www.python.org/ftp/python/3.14.0/Python-3.14.0a1.tgz
-```
-
-<br/>
-
-Разархивируем скачанный архив:
-```yml
-tar zxvf Python-3.14.0a1.tgz
-```
-
-<br/>
-
-Копируем полученную папку и сразу переходим в нее:
-```yml
-cp -r Python-3.14.0a1 /usr/local/bin
-cd /usr/local/bin/Python-3.14.0a1/
-```
-
-<br/>
-
-Устанавливаем зависимости для компиляции:
-```yml
-apt-get install -y ansible zlib-devel libssl-devel libsqlite3-devel libffi-devel gcc pip
-```
-
-<br/>
-
-Добавляем параметры для компиляции:
-```yml
-./configure --prefix=/usr/local --with-ensurepip=install
-```
-> **--prefix=/usr/local** - указание корневой директории
->
-> **--with-ensurepip=install** - обеспечивает поддержку начальной загрузки установщика pip в виртуальную среду или существующую установку Python
-
-<br/>
-
-Компилируем:
-```yml
-make
-make install
-```
-
-<br/>
-
-
-Командой **`python3.14`** проверяем, что **Python** установился, получив следующий вывод:
-```yml
-Python 3.14.0a1 (main, Nov 2 2024, 28:18:22) [GCC 10.3.1 20210703 (ALT Sisyphus 10.3.1-alt2)] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>>
-```
-
-<br/>
-
-#### Создание виртуального окружения
-
-Создаем директорию для **ansible**:
-```yml
-mkdir /etc/ansible
-```
-
-</br>
-
-В ранее созданной директории создаем виртуальной окружение:
-```yml
-python3.14 -m venv .env
-```
-
-<br/>
-
-Активируем его:
-```yml
-source .env/bin/activate
-```
-
-<br/>
-
-После активации окружения мы увидим изменения оболочки:
-```yml
-(.env) [root@br-srv ~]#
-```
 
 #### Конфигурация SSH Alt Linux
 
@@ -585,64 +491,70 @@ AllowUsers  sshuser
 
 <br/>
 
-На **BR-SRV** генерируем ключи **RSA**:
-```yml
-ssh-keygen -t rsa
-```
-> Расположение ключей и пароль не важны
-
-<br/>
-
-Передаем ключи на **HQ-SRV** и **HQ-CLI**:
-```yml
-ssh-copy-id sshuser@192.168.100.62 -p 2024
-ssh-copy-id sshuser@192.168.200.14 -p 2024
-```
-
-<br/>
-
 #### Конфигурация Ansible
 
-Для начала создаем **конфигурационный файл**:
+Устанавливаем необходимые пакеты:
 ```yml
-[defaults]
+apt-get install -y ansible sshpass
+```
 
+<br/>
+
+Редактируем указанные строки в **конфигурационном файле `/etc/ansible/ansible.cfg`**:
+```yml
 inventory = ./inventory.yml
-interpreter_python = /usr/bin/python3.9
-ask_pass = False
 host_key_checking = False
 ```
 > **inventory = ./inventory.yml** - путь до инвентарного файла
->
-> **interpreter_python = /usr/bin/python3.9** - указание python3.9 в качестве интерпретатора Python
->
-> **ask_pass = False** - отказ от запроса пароля для подключения
 >
 > **host_key_checking = False** - отключение проверки ключа хоста
 
 <br/>
 
-Далее заполняем инвентарный файл:
+Далее заполняем **инвентарный файл `/etc/ansible/inventory.yml`**:
 ```yml
-VMs:
-  hosts:
-    HQ-SRV:
-      ansible_host: 192.168.100.62
-      ansible_user: sshuser
-      ansible_port: 2024
-    HQ-CLI:
-      ansible_host: 192.168.200.14
-      ansible_user: sshuser
-      ansible_port: 2024
-    HQ-RTR:
-      ansible_host: 192.168.100.1
-      ansible_user: net_admin
-      ansible_password: P@ssw0rd
-    BR-RTR:
-      ansible_host: 192.168.0.1
-      ansible_user: net_admin
-      ansible_password: P@ssw0rd
+all:
+  children:
+    Networking:
+      hosts:
+        hq-rtr:
+        br-rtr:
+    Servers:
+      hosts:
+        hq-srv:
+          ansible_host: 192.168.100.62
+          ansible_port: 2024
+    Clients:
+      hosts:
+        hq-cli:
+          ansible_host: 192.168.200.14
+          ansible_port: 2024
 ```
+
+<br/>
+
+Создаем файлы с переменными для **всех категорий** и для категории **Networking**:
+```yml
+cd /etc/ansible
+mkdir group_vars
+touch group_vars/{all.yml,Networking.yml}
+```
+
+<br/>
+
+Редактируем их:
+```yml
+ansible_ssh_user: sshuser
+ansible_ssh_pass: P@ssw0rd
+ansible_python_interpreter: /usr/bin/python3
+```
+> all.yml
+
+```yml
+ansible_connection: network_cli
+ansible_network_os: ios
+```
+> Networking.yml
 
 <br/>
 
@@ -656,6 +568,7 @@ ansible -m ping all
 >
 > **all** - выполнить модуль для всех виртуальных машин, указанных в инвентарном файле
 
+<br/>
 
 </details>
 
