@@ -737,7 +737,7 @@ ip nat source dynamic inside-to-outside pool NAT_POOL overload interface int0
 
 Создаем **пул** для **DHCP-сервера**:
 ```yml
-ip pool cli_pool 192.168.200.14-192.168.200.14
+ip pool hq-cli 192.168.200.14-192.168.200.14
 ```
 
 <br/>
@@ -745,11 +745,11 @@ ip pool cli_pool 192.168.200.14-192.168.200.14
 Настраиваем сам **DHCP-сервер**:
 ```yml
 dhcp-server 1
-  pool cli-pool 1
-  mask 255.255.255.240
-  gateway 192.168.200.1
-  dns 192.168.100.62
-  domain-name au-team.irpo
+  pool hq-cli 1
+    mask 28
+    gateway 192.168.200.1
+    dns 192.168.100.62
+    domain-name au-team.irpo
 ```
 > Привязка **пула**
 
