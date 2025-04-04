@@ -18,6 +18,7 @@
     > Решено не полностью (проблема в **учетной записи пользователя базы данных**)
 6. **[На маршрутизаторах сконфигурируйте статическую трансляцию портов](https://github.com/damh66/demo2025/tree/main/module2#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-6)**
 
+7. **[Запустите сервис moodle на сервере HQ-SRV](https://github.com/damh66/demo2025/edit/main/module2/README.md#%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-7)**
 <br/>
 
 <br/>
@@ -836,6 +837,173 @@ ip nat source static tcp 192.168.0.1 2024 192.168.0.30 2024
 ```yml
 ip nat source static tcp 192.168.100.1 2024 192.168.100.62 2024
 ```
+
+</details>
+
+<br/>
+
+## Задание 7
+
+### Запустите сервис moodle на сервере HQ-SRV
+
+- Используйте веб-сервер apache
+
+- В качестве системы управления базами данных используйте mariadb
+
+- Создайте базу данных moodledb
+
+- Создайте пользователя moodle с паролем P@ssw0rd и предоставьте ему права доступа к этой базе данных
+
+- У пользователя admin в системе обучения задайте пароль P@ssw0rd
+
+- На главной странице должен отражаться номер рабочего места в виде арабской цифры, других подписей делать не надо
+
+- Основные параметры отметьте в отчеты
+
+<br/>
+
+<details>
+<summary>Решение</summary>
+<br/>
+
+#### Конфигурация базы данных
+
+Устанавливаем необходимые пакеты:
+```yml
+apt-get install -y moodle moodle-apache2 moodle-base moodle-local-mysql phpMyAdmin
+```
+
+<br/>
+
+Добавляем в **автозагрузку** базу данных:
+```yml
+systemctl enable --now mysqld
+```
+
+<br/>
+
+Задаем пароль для пользователя **root** в базе данных:
+```yml
+mysqladmin password 'P@ssw0rd'
+```
+
+<br/>
+
+Редактируем настройки **веб-сервера**:
+```yml
+cat /etc/httpd2/conf/include/Directory_moodle_default.conf | grep 'Require all granted' || sed -i '/AllowOverride None/a Require all granted' /etc/httpd2/conf/include/Directory_moodle_default.conf
+```
+
+<br/>
+
+Изменяем строку, отвечающую за количество входных переменных:
+```yml
+sed -i 's/; max_input_vars = 1000/max_input_vars = 5000/g' /etc/php/8.2/apache2-mod_php/php.ini
+```
+
+<br/>
+
+Добавляем в **автозагрузку** веб-сервер:
+```yml
+systemctl enable --now httpd2
+```
+
+<br/>
+
+Авторизуемся в **MySQL**:
+```yml
+mysql -u root -p
+```
+> Вводим ранее указанный пароль
+
+<br/>
+
+Создаем **пользователя** для базы данных:
+```yml
+create user 'moodle'@'localhost' identified by 'P@ssw0rd';
+```
+
+<br/>
+
+Создаем базу данных:
+```yml
+create database moodledb default character set utf8 collate utf8_unicode_ci;
+```
+
+<br/>
+
+Выдаем **права** пользователю на созданную базу данных:
+```yml
+grant all privileges on moodledb.* to moodle@localhost;
+```
+
+<br/>
+
+Переходим на **`hq-srv.au-team.irpo/moodle`** и выбираем язык:
+<p align="center">
+  <img width="600" src="https://github.com/user-attachments/assets/0e8cdfda-6466-416e-afab-e7f61fcf1b3a"
+</p>
+
+<br/>
+
+Подтверждаем пути директорий:
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/548b1126-3b5a-4104-a692-b0aafdd0617a"
+</p>
+
+<br/>
+
+Выбираем систему управления базы данных:
+<p align="center">
+  <img width="300" src="https://github.com/user-attachments/assets/d21aa42f-8988-44f6-bcab-67e0fa9cae08"
+</p>
+
+<br/>
+
+Заполняем данные о базе данных и пользователе:
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/1c5414a6-5aba-4ffd-8d4a-32e49bcb770b"
+</p>
+
+<br/>
+
+Соглашаемся с условиями:
+<p align="center">
+  <img width="300" src="https://github.com/user-attachments/assets/055ed45c-f87c-44ec-9f3e-0f32737f38c7"
+</p>
+
+<br/>
+
+Убеждаемся в успешной проверке:
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/7ddc9e35-3c96-4623-94d0-9f57e2803b3c"
+</p>
+
+<br/>
+
+После установки настраиваем учетную запись администратора:
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/337888dc-1542-4bdd-90c2-b43dcf14e7fa"
+</p>
+
+> Заполняем в соответствии с условиями задания
+
+<br/>
+
+Указываем название сайта, часовой пояс и электронную почту:
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/494d4a54-dad8-4e60-adc8-f415671bef4a"
+</p>
+<p align="center">
+  <img width="400" src="https://github.com/user-attachments/assets/eca69476-dedd-4fc6-9198-4c7c27d7a428"
+</p>
+
+<br/>
+
+После успешного создания попадаем на главную страницу:
+<p align="center">
+  <img width="600" src="https://github.com/user-attachments/assets/9ae25d22-7cf0-4b8c-8fd9-c1f538679d82"
+</p>
 
 </details>
 
